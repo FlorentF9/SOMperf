@@ -3,20 +3,25 @@ External indices
 """
 
 import numpy as np
-from sklearn.metrics.cluster.supervised import check_clusterings, contingency_matrix
+from sklearn.metrics.cluster.supervised import check_clusterings
 from sklearn.utils.linear_assignment_ import linear_assignment
 from sklearn.metrics import accuracy_score
 
 
-def class_scatter_index(dist_fun, n_units, y_true, y_pred):
+def _contingency_matrix(y_true, y_pred):
+    w = np.zeros((y_true.max() + 1, y_pred.max() + 1), dtype=np.int64)
+    for c, k in zip(y_true, y_pred):
+        w[c, k] += 1  # w[c, k] = number of c-labeled samples in map cell k
+    return w
+
+
+def class_scatter_index(dist_fun, y_true, y_pred):
     """Class scatter index (CSI).
 
     Parameters
     ----------
     dist_fun : function (k : int, l : int) => int
         distance function between units k and l on the map.
-    n_units : int
-        number of units in the SOM map.
     y_true: array, shape = [n]
         true labels.
     y_pred: array, shape = [n]
@@ -34,9 +39,8 @@ def class_scatter_index(dist_fun, n_units, y_true, y_pred):
     y_pred = y_pred.astype(np.int64)
     check_clusterings(y_true, y_pred)
     n_classes = y_true.max() + 1
-    w = np.zeros((n_classes, n_units))
-    for c, k in zip(y_true, y_pred):
-        w[c, k] += 1  # w[c, k] = number of c-labeled samples in map cell k
+    n_units = y_pred.max() + 1
+    w = _contingency_matrix(y_true, y_pred)
     groups = np.zeros(n_classes, dtype=np.int64)
     for c in range(n_classes):
         # initialize set of remaining units to check
@@ -72,9 +76,9 @@ def clustering_accuracy(y_true, y_pred):
     y_true = y_true.astype(np.int64)
     y_pred = y_pred.astype(np.int64)
     check_clusterings(y_true, y_pred)
-    w = contingency_matrix(y_true, y_pred)
+    w = _contingency_matrix(y_true, y_pred).T
     ind = linear_assignment(w.max() - w)
-    return sum([w[i, j] for i, j in ind]) * 1.0 / y_pred.size
+    return np.sum([w[i, j] for i, j in ind]) / y_true.size
 
 
 def entropy(y_true, y_pred):
@@ -98,8 +102,8 @@ def entropy(y_true, y_pred):
     y_true = y_true.astype(np.int64)
     y_pred = y_pred.astype(np.int64)
     check_clusterings(y_true, y_pred)
-    w = contingency_matrix(y_true, y_pred)
-    freqs = np.divide(w.max(axis=0), w.sum(axis=0))  # relative frequencies of majority class
+    w = _contingency_matrix(y_true, y_pred)
+    freqs = np.divide(w.max(axis=0) + 1e-12, w.sum(axis=0) + 1e-12)  # relative frequencies of majority class
     return np.sum(-np.log(freqs))
 
 
@@ -144,7 +148,7 @@ def purity(y_true, y_pred):
     y_true = y_true.astype(np.int64)
     y_pred = y_pred.astype(np.int64)
     check_clusterings(y_true, y_pred)
-    w = contingency_matrix(y_true, y_pred)
+    w = _contingency_matrix(y_true, y_pred)
     label_mapping = w.argmax(axis=0)
-    y_pred_voted = np.array([label_mapping[y_pred[i]] for i in range(y_pred.size)])
+    y_pred_voted = np.array([label_mapping[y] for y in y_pred])
     return accuracy_score(y_true, y_pred_voted)
