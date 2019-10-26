@@ -18,59 +18,59 @@ TODO
 
 ### Internal
 
-* Combined error [5] :heavy_check_mark:
-* Distortion (SOM loss function) [4,8,11] :heavy_check_mark:
-* Kruskal-Shepard error [3,7] :heavy_check_mark:
-* Neighborhood preservation [10] :heavy_check_mark:
-* Quantization error :heavy_check_mark:
-* Topographic error :heavy_check_mark:
-* Topographic product [1,2,12] :heavy_check_mark:
-* Trustworthiness [10] :heavy_check_mark:
+* [x] Combined error [5]
+* [x] Distortion (SOM loss function) [4,8,11]
+* [x] Kruskal-Shepard error [3,7]
+* [x] Neighborhood preservation [10]
+* [x] Quantization error
+* [x] Topographic error
+* [x] Topographic product [1,2,12]
+* [x] Trustworthiness [10]
 
 ### External (label-based)
 
-* Adjusted Rand index (ARI) :arrow_right: `sklearn.metrics.adjusted_rand_score`
-* Class scatter index [3] :heavy_check_mark:
-* Completeness :arrow_right: `sklearn.metrics.completeness_score`
-* Davies-Bouldin :arrow_right: `sklearn.metrics.davies_bouldin_score`
-* Entropy [3] :heavy_check_mark:
-* Homogeneity :arrow_right: `sklearn.metrics.homogeneity_score`
-* Normalized Minor class occurrence [3] :heavy_check_mark: (= 1 - purity)
-* Mutual information :arrow_right: `sklearn.metrics.mutual_info_score`
-* Normalized mutual information (NMI) :arrow_right: `sklearn.metrics.normalized_mutual_info_score`
-* Purity :heavy_check_mark:
-* Silhouette :arrow_right: `sklearn.metrics.silhouette_score`
-* Unsupervised clustering accuracy :heavy_check_mark: 
+* [x] Adjusted Rand index (ARI) :arrow_right: `sklearn.metrics.adjusted_rand_score`
+* [x] Class scatter index [3]
+* [x] Completeness :arrow_right: `sklearn.metrics.completeness_score`
+* [x] Davies-Bouldin :arrow_right: `sklearn.metrics.davies_bouldin_score`
+* [x] Entropy [3]
+* [x] Homogeneity :arrow_right: `sklearn.metrics.homogeneity_score`
+* [x] Normalized Minor class occurrence [3] (= 1 - purity)
+* [x] Mutual information :arrow_right: `sklearn.metrics.mutual_info_score`
+* [x] Normalized mutual information (NMI) :arrow_right: `sklearn.metrics.normalized_mutual_info_score`
+* [x] Purity
+* [x] Silhouette :arrow_right: `sklearn.metrics.silhouette_score`
+* [x] Unsupervised clustering accuracy 
 
 ## List of SOM utilities
 
 ### Map distance functions
 
-* Rectangular topology :heavy_check_mark:
-* Square topology :heavy_check_mark:
-* Hexagonal topology :white_check_mark:
-* Cylindrical topology :white_check_mark:
-* Toroidal topology :white_check_mark:
+* [x] Rectangular topology
+* [x] Square topology
+* [ ] Hexagonal topology
+* [ ] Cylindrical topology
+* [ ] Toroidal topology
 
 ### Neighborhood functions
 
-* Gaussian neighborhood :heavy_check_mark:
-* Constant window neighborhood :heavy_check_mark:
-* Inverse neighborhood :white_check_mark:
-* Squared inverse neighborhood :white_check_mark:
-* Clipped versions (0 if d < eps) :white_check_mark:
+* [x] Gaussian neighborhood
+* [x] Constant window neighborhood
+* [ ] Inverse neighborhood
+* [ ] Squared inverse neighborhood
+* [ ] Clipped versions (0 if d < eps)
 
 ## SOM libraries
 
 Here is a small selection of SOM algorithm implementations:
 
-* [SOM toolbox](https://github.com/ilarinieminen/SOM-Toolbox) (Matlab)
-* [minisom](https://github.com/JustGlowing/minisom) (Python)
-* [SOMPY](https://github.com/sevamoo/SOMPY) (Python)
-* [tensorflow-som](https://github.com/cgorman/tensorflow-som) (Python/TensorFlow)
-* [DESOM](https://github.com/FlorentF9/DESOM) (Python/Keras)
-* [SOMbrero](https://cran.r-project.org/web/packages/SOMbrero/index.html) (R)
-* [sparkml-som](https://github.com/FlorentF9/sparkml-som) (Scala/Spark ML)
+* [SOM toolbox](https://github.com/ilarinieminen/SOM-Toolbox) ![](https://img.shields.io/github/stars/ilarinieminen/SOM-Toolbox.svg?style=social) (Matlab)
+* [minisom](https://github.com/JustGlowing/minisom) ![](https://img.shields.io/github/stars/JustGlowing/minisom.svg?style=social) (Python)
+* [SOMPY](https://github.com/sevamoo/SOMPY) ![](https://img.shields.io/github/stars/sevamoo/SOMPY.svg?style=social) (Python)
+* [tensorflow-som](https://github.com/cgorman/tensorflow-som) ![](https://img.shields.io/github/stars/cgorman/tensorflow-som.svg?style=social) (Python/TensorFlow)
+* [DESOM](https://github.com/FlorentF9/DESOM) ![](https://img.shields.io/github/stars/FlorentF9/DESOM.svg?style=social) (Python/Keras)
+* SOMbrero [CRAN](https://cran.r-project.org/web/packages/SOMbrero/index.html)/[Github](https://github.com/tuxette/SOMbrero) ![](https://img.shields.io/github/stars/tuxette/SOMbrero.svg?style=social) (R)
+* [sparkml-som](https://github.com/FlorentF9/sparkml-som) ![](https://img.shields.io/github/stars/FlorentF9/sparkml-som.svg?style=social) (Scala/Spark ML)
 
 ## References
 
