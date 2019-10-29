@@ -6,6 +6,8 @@ import numpy as np
 from sklearn.metrics.cluster.supervised import check_clusterings
 from sklearn.utils.linear_assignment_ import linear_assignment
 from sklearn.metrics import accuracy_score
+from scipy.sparse import csr_matrix
+from scipy.sparse.csgraph import connected_components
 
 
 def _contingency_matrix(y_true, y_pred):
@@ -43,17 +45,10 @@ def class_scatter_index(dist_fun, y_true, y_pred):
     w = _contingency_matrix(y_true, y_pred)
     groups = np.zeros(n_classes, dtype=np.int64)
     for c in range(n_classes):
-        # initialize set of remaining units to check
-        units_to_check = set(range(n_units))
-        while units_to_check:
-            k = units_to_check.pop()
-            if w[c, k] > 0:  # beginning of a group of units
-                groups[c] += 1
-                group_units = set()  # collect units that are part of the same group
-                for l in units_to_check:
-                    if w[c, k] > 0 and w[c, l] > 0 and dist_fun(k, l) == 1:
-                        group_units.add(l)
-                units_to_check -= group_units
+        connectivity = csr_matrix([[1 if dist_fun(k, l) == 1 else 0
+                                   for l in range(n_units) if w[c, l] > 0]
+                                   for k in range(n_units) if w[c, k] > 0])
+        groups[c] = connected_components(csgraph=connectivity, directed=False, return_labels=False)
     return np.mean(groups)
 
 
