@@ -4,6 +4,7 @@ Internal indices
 
 import numpy as np
 from sklearn.metrics.pairwise import euclidean_distances
+from scipy.sparse import csr_matrix
 from scipy.sparse.csgraph import shortest_path
 import pandas as pd
 
@@ -38,9 +39,9 @@ def combined_error(dist_fun, som, x=None, d=None):
             d = euclidean_distances(x, som)
     # pairwise euclidean distances between neighboring SOM prototypes
     # distances between non-neighboring units are set to inf to force the path to follow neighboring units
-    d_som = np.array([[np.sqrt(np.sum(np.square(som[k] - som[l]))) if dist_fun(k, l) == 1 else np.inf
-                      for l in range(som.shape[0])]
-                      for k in range(som.shape[0])])
+    d_som = csr_matrix([[np.sqrt(np.sum(np.square(som[k] - som[l]))) if dist_fun(k, l) == 1 else np.inf
+                        for l in range(som.shape[0])]
+                        for k in range(som.shape[0])])
     tbmus = np.argsort(d, axis=1)[:, :2]  # two best matching units
     ces = d[:, tbmus[:, 0]]
     for i in range(d.shape[0]):
