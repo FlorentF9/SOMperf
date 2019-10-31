@@ -43,8 +43,9 @@ def combined_error(dist_fun, som, x=None, d=None):
                         for l in range(som.shape[0])]
                         for k in range(som.shape[0])])
     tbmus = np.argsort(d, axis=1)[:, :2]  # two best matching units
-    ces = d[:, tbmus[:, 0]]
+    ces = np.zeros(d.shape[0])
     for i in range(d.shape[0]):
+        ces[i] = d[i, tbmus[i, 0]]
         if dist_fun(tbmus[i, 0], tbmus[i, 1]) == 1:  # if BMUs are neighbors
             ces[i] += d_som[tbmus[i, 0], tbmus[i, 1]]
         else:
