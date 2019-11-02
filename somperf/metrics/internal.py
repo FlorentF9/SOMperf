@@ -152,7 +152,7 @@ def neighborhood_preservation(k, som, x, d=None):
 
     Returns
     -------
-    np : float
+    np : float in [0, 1]
         neighborhood preservation measure (higher is better)
 
     References
@@ -160,21 +160,21 @@ def neighborhood_preservation(k, som, x, d=None):
     Venna, J., & Kaski, S. (2001). Neighborhood preservation in nonlinear projection methods: An experimental study.
     """
     n = x.shape[0]  # data size
-    assert k < (n // 2), 'Number of neighbors k must be < N/2 (where N is the number of data samples).'
+    assert k < (n / 2), 'Number of neighbors k must be < N/2 (where N is the number of data samples).'
     if d is None:
         d = euclidean_distances(x, som)
-    d_data = euclidean_distances(x)
+    d_data = euclidean_distances(x) + np.diag(np.inf * np.ones(n))
     projections = som[np.argmin(d, axis=1)]
-    d_projections = euclidean_distances(projections)
-    original_ranks = pd.DataFrame(d_data).rank(method='min', axis=1) - 1  # make ranks start from 0
-    projected_ranks = pd.DataFrame(d_projections).rank(method='min', axis=1) - 1
-    weights = ((projected_ranks <= k).sum(axis=1) - 1) / ((original_ranks <= k).sum(axis=1) - 1)  # weight k-NN ties
+    d_projections = euclidean_distances(projections) + np.diag(np.inf * np.ones(n))
+    original_ranks = pd.DataFrame(d_data).rank(method='min', axis=1)
+    projected_ranks = pd.DataFrame(d_projections).rank(method='min', axis=1)
+    weights = (projected_ranks <= k).sum(axis=1) / (original_ranks <= k).sum(axis=1)  # weight k-NN ties
     nps = np.zeros(n)
     for i in range(n):
         for j in range(n):
             if (i != j) and (original_ranks.iloc[i, j] <= k) and (projected_ranks.iloc[i, j] > k):
                 nps[i] += (projected_ranks.iloc[i, j] - k) * weights[i]
-    return 1.0 - np.sum(nps) / (n * k * (2*n - 3*k - 1))
+    return 1.0 - 2.0 / (n * k * (2*n - 3*k - 1)) * np.sum(nps)
 
 
 def neighborhood_preservation_trustworthiness(k, som, x, d=None):
@@ -193,7 +193,7 @@ def neighborhood_preservation_trustworthiness(k, som, x, d=None):
 
     Returns
     -------
-    npr, tr : float tuple
+    npr, tr : float tuple in [0, 1]
         neighborhood preservation and trustworthiness measures (higher is better)
 
     References
@@ -201,15 +201,15 @@ def neighborhood_preservation_trustworthiness(k, som, x, d=None):
     Venna, J., & Kaski, S. (2001). Neighborhood preservation in nonlinear projection methods: An experimental study.
     """
     n = x.shape[0]  # data size
-    assert k < (n // 2), 'Number of neighbors k must be < N/2 (where N is the number of data samples).'
+    assert k < (n / 2), 'Number of neighbors k must be < N/2 (where N is the number of data samples).'
     if d is None:
         d = euclidean_distances(x, som)
-    d_data = euclidean_distances(x)
+    d_data = euclidean_distances(x) + np.diag(np.inf * np.ones(n))
     projections = som[np.argmin(d, axis=1)]
-    d_projections = euclidean_distances(projections)
-    original_ranks = pd.DataFrame(d_data).rank(method='min', axis=1) - 1  # make ranks start from 0
+    d_projections = euclidean_distances(projections) + np.diag(np.inf * np.ones(n))
+    original_ranks = pd.DataFrame(d_data).rank(method='min', axis=1)
     projected_ranks = pd.DataFrame(d_projections).rank(method='min', axis=1) - 1
-    weights = ((projected_ranks <= k).sum(axis=1) - 1) / ((original_ranks <= k).sum(axis=1) - 1)  # weight k-NN ties
+    weights = (projected_ranks <= k).sum(axis=1) / (original_ranks <= k).sum(axis=1)  # weight k-NN ties
     nps = np.zeros(n)
     trs = np.zeros(n)
     for i in range(n):
@@ -218,8 +218,8 @@ def neighborhood_preservation_trustworthiness(k, som, x, d=None):
                 nps[i] += (projected_ranks.iloc[i, j] - k) * weights[i]
             elif (i != j) and (original_ranks.iloc[i, j] > k) and (projected_ranks.iloc[i, j] <= k):
                 trs[i] += (original_ranks.iloc[i, j] - k) / weights[i]
-    npr = 1.0 - np.sum(nps) / (n * k * (2*n - 3*k - 1))
-    tr = 1.0 - np.sum(trs) / (n * k * (2 * n - 3 * k - 1))
+    npr = 1.0 - 2.0 / (n * k * (2*n - 3*k - 1)) * np.sum(nps)
+    tr = 1.0 - 2.0 / (n * k * (2*n - 3*k - 1)) * np.sum(trs)
     return npr, tr
 
 
@@ -269,7 +269,7 @@ def topographic_error(dist_fun, som=None, x=None, d=None):
 
     Returns
     -------
-    te : float
+    te : float in [0, 1]
         topographic error (lower is better)
     """
     if d is None:
@@ -295,7 +295,7 @@ def topographic_product(dist_fun, som):
     Returns
     -------
     tp : float
-        topographic product (tp < 0 when the map is too small; tp > 0 if it is too large)
+        topographic product (tp < 0 when the map is too small, tp > 0 if it is too large)
 
     References
     ----------
@@ -340,7 +340,7 @@ def trustworthiness(k, som, x, d=None):
 
     Returns
     -------
-    tr : float
+    tr : float in [0, 1]
         trustworthiness measure (higher is better)
 
     References
@@ -348,18 +348,18 @@ def trustworthiness(k, som, x, d=None):
     Venna, J., & Kaski, S. (2001). Neighborhood preservation in nonlinear projection methods: An experimental study.
     """
     n = x.shape[0]  # data size
-    assert k < (n // 2), 'Number of neighbors k must be < N/2 (where N is the number of data samples).'
+    assert k < (n / 2), 'Number of neighbors k must be < N/2 (where N is the number of data samples).'
     if d is None:
         d = euclidean_distances(x, som)
-    d_data = euclidean_distances(x)
+    d_data = euclidean_distances(x) + np.diag(np.inf * np.ones(n))
     projections = som[np.argmin(d, axis=1)]
-    d_projections = euclidean_distances(projections)
-    original_ranks = pd.DataFrame(d_data).rank(method='min', axis=1)  # make ranks start from 0
+    d_projections = euclidean_distances(projections) + np.diag(np.inf * np.ones(n))
+    original_ranks = pd.DataFrame(d_data).rank(method='min', axis=1)
     projected_ranks = pd.DataFrame(d_projections).rank(method='min', axis=1)
-    weights = ((original_ranks <= k).sum(axis=1) - 1) / ((projected_ranks <= k).sum(axis=1) - 1)  # weight k-NN ties
+    weights = (original_ranks <= k).sum(axis=1) / (projected_ranks <= k).sum(axis=1)  # weight k-NN ties
     trs = np.zeros(n)
     for i in range(n):
         for j in range(n):
             if (i != j) and (original_ranks.iloc[i, j] > k) and (projected_ranks.iloc[i, j] <= k):
                 trs[i] += (original_ranks.iloc[i, j] - k) * weights[i]
-    return 1.0 - np.sum(trs) / (n * k * (2*n - 3*k - 1))
+    return 1.0 - 2.0 / (n * k * (2*n - 3*k - 1)) * np.sum(trs)
