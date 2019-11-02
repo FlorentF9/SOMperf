@@ -208,7 +208,7 @@ def neighborhood_preservation_trustworthiness(k, som, x, d=None):
     projections = som[np.argmin(d, axis=1)]
     d_projections = euclidean_distances(projections) + np.diag(np.inf * np.ones(n))
     original_ranks = pd.DataFrame(d_data).rank(method='min', axis=1)
-    projected_ranks = pd.DataFrame(d_projections).rank(method='min', axis=1) - 1
+    projected_ranks = pd.DataFrame(d_projections).rank(method='min', axis=1)
     weights = (projected_ranks <= k).sum(axis=1) / (original_ranks <= k).sum(axis=1)  # weight k-NN ties
     nps = np.zeros(n)
     trs = np.zeros(n)
