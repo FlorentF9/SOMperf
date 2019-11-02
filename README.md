@@ -75,6 +75,8 @@ Here are the results:
 1.0  # perfect trustworthiness means that any neighboring prototypes correspond to original neighboring samples
 ```
 
+Label-based metrics, also called external indices, rather take as inputs the cluster labels `y_pred` and the ground-truth class labels `y_true`, except the Class scatter index that also depends on the map topology (`dist_fun`).
+
 ## List of metrics
 
 ### Internal
@@ -122,6 +124,10 @@ Here are the results:
 * [ ] Squared inverse neighborhood
 * [ ] Mexican hat neighborhood
 * [ ] Clipped versions (0 if d < eps)
+
+## Tests
+
+All metrics have been tested to check results against manually computed values, expected behavior and/or results from research papers. Tests and visualizations are available as a jupyter notebook in the `tests/` directory.
 
 ## SOM libraries
 
