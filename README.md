@@ -1,18 +1,79 @@
 # SOMperf: SOM performance metrics and quality indices
 
-**This package is in its early phase of development. SOM performance metrics are available, but they may still contain bugs. Please report them in an issue if you find some.**
+**This package is in its early phase of development. SOM performance metrics have all been tested pretty well, but they may still contain bugs. Please report them in an issue if you find some.**
 
 ## Installation
 
-This module was written for Python 3. It can be installed easily using the setup script:
+This module was written for Python 3 and depends on following libraries:
+
+* numpy
+* pandas
+* scipy
+* scikit-learn
+
+SOMperf can be installed easily using the setup script:
 
 ```shell
 $ python3 setup.py install
 ```
 
+It might be available in PyPI in the future.
+
 ## Getting started
 
-TODO
+SOMperf contains 2 modules: `metrics`, containing all internal and external quality indices, and `utils`, containing utility functions for SOMs (distance and neighborhood functions).
+
+Metric functions usually take several of following arguments:
+
+* `som`: a self-organizing map model with _K_ prototypes/code vectors in dimension _D_ given as a _K X D_-numpy array
+* `x`: data matrix with _N_ samples in dimension _D_, given as a _N X D_-numpy array
+* `d`: a pre-computed pairwise (non-squared) euclidean distance matrix between samples and prototypes, given as a _N X K_-numpy array
+* `dist_fun`: a function computing the distance between two units on the map, such that `dist_fun(k, l) == 1` iff `k` and `l`are neighbors. Distance function on usual grid topologies are available in `somperf.utils.topology`.
+* `neighborhood_fun`: neighborhood kernel function used in the SOM distortion loss. Usual neighborhood functions are available in `somperf.utils.neighborhood`.
+
+Neighborhood preservation and Trustworthiness also take an additional `k` argument for the number of neighbors to consider.
+
+Here is a quick example using minisom to compute metrics on an 8-color dataset and a 10-by-10 map:
+
+```python
+import numpy as np
+from minisom import MiniSom
+
+from somperf.metrics import *
+from somperf.utils.topology import rectangular_topology_dist
+
+# 8 colors
+X = np.array([[1.0, 0.0, 0.0],
+              [0.0, 1.0, 0.0],
+              [0.0, 0.0, 1.0],
+              [1.0, 1.0, 1.0],
+              [0.5, 0.5, 0.5],
+              [1.0, 1.0, 0.0],
+              [0.0, 1.0, 1.0],
+              [1.0, 0.0, 1.0]])
+
+# define and train 10-by-10 map
+map_size = (10, 10)
+som = MiniSom(map_size[0], map_size[1], X.shape[-1], sigma=1.0, learning_rate=1.0, random_seed=42)
+som.random_weights_init(X)
+som.train_random(X, 10000)
+
+# get weights as a (100, 3) array
+weights = som.get_weights().reshape(map_size[0]*map_size[1], -1)
+
+# compute a few metrics
+print('Topographic product = ', topographic_product(rectangular_topology_dist(map_size), weights))
+print('Neighborhood preservation = ', neighborhood_preservation(1, weights, X))
+print('Trustworthiness = ', trustworthiness(1, weights, X))
+```
+
+Here are the results:
+
+```python
+0.3002313673993011  # TP > 0 is no surprise, because a (10, 10) map is too large for our 8-color dataset
+0.9375  # original neighbors are not always assigned to neighboring prototypes
+1.0  # perfect trustworthiness means that any neighboring prototypes correspond to original neighboring samples
+```
 
 ## List of metrics
 
@@ -56,8 +117,10 @@ TODO
 
 * [x] Gaussian neighborhood
 * [x] Constant window neighborhood
+* [ ] Triangle neighborhood
 * [ ] Inverse neighborhood
 * [ ] Squared inverse neighborhood
+* [ ] Mexican hat neighborhood
 * [ ] Clipped versions (0 if d < eps)
 
 ## SOM libraries
@@ -69,7 +132,7 @@ Here is a small selection of SOM algorithm implementations:
 * [SOMPY](https://github.com/sevamoo/SOMPY) ![](https://img.shields.io/github/stars/sevamoo/SOMPY.svg?style=social) (Python)
 * [tensorflow-som](https://github.com/cgorman/tensorflow-som) ![](https://img.shields.io/github/stars/cgorman/tensorflow-som.svg?style=social) (Python/TensorFlow)
 * [DESOM](https://github.com/FlorentF9/DESOM) ![](https://img.shields.io/github/stars/FlorentF9/DESOM.svg?style=social) (Python/Keras)
-* SOMbrero [CRAN](https://cran.r-project.org/web/packages/SOMbrero/index.html)/[Github](https://github.com/tuxette/SOMbrero) ![](https://img.shields.io/github/stars/tuxette/SOMbrero.svg?style=social) (R)
+* SOMbrero ([CRAN](https://cran.r-project.org/web/packages/SOMbrero/index.html)/[Github](https://github.com/tuxette/SOMbrero)) ![](https://img.shields.io/github/stars/tuxette/SOMbrero.svg?style=social) (R)
 * [sparkml-som](https://github.com/FlorentF9/sparkml-som) ![](https://img.shields.io/github/stars/FlorentF9/sparkml-som.svg?style=social) (Scala/Spark ML)
 
 ## References
