@@ -89,20 +89,20 @@ Label-based metrics, also called external indices, rather take as inputs the clu
 * [x] Topographic error
 * [x] Topographic product [1,2,12]
 * [x] Trustworthiness [10]
+* [x] Silhouette :arrow_right: `sklearn.metrics.silhouette_score`
+* [x] Davies-Bouldin :arrow_right: `sklearn.metrics.davies_bouldin_score`
 
 ### External (label-based)
 
 * [x] Adjusted Rand index (ARI) :arrow_right: `sklearn.metrics.adjusted_rand_score`
 * [x] Class scatter index [3]
 * [x] Completeness :arrow_right: `sklearn.metrics.completeness_score`
-* [x] Davies-Bouldin :arrow_right: `sklearn.metrics.davies_bouldin_score`
 * [x] Entropy [3]
 * [x] Homogeneity :arrow_right: `sklearn.metrics.homogeneity_score`
 * [x] Normalized Minor class occurrence [3] (= 1 - purity)
 * [x] Mutual information :arrow_right: `sklearn.metrics.mutual_info_score`
 * [x] Normalized mutual information (NMI) :arrow_right: `sklearn.metrics.normalized_mutual_info_score`
 * [x] Purity
-* [x] Silhouette :arrow_right: `sklearn.metrics.silhouette_score`
 * [x] Unsupervised clustering accuracy 
 
 ## List of SOM utilities
