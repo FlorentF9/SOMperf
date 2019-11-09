@@ -95,7 +95,7 @@ def distortion(dist_fun, neighborhood_fun, som=None, x=None, d=None):
     return np.mean(distortions)
 
 
-def kruskal_shepard_error(dist_fun, som, x, d=None):
+def kruskal_shepard_error(dist_fun, x, som=None, d=None):
     """Kruskal-Shepard error.
 
     Measures distance preservation between input space and output space. Euclidean distance is used in input space.
@@ -106,10 +106,10 @@ def kruskal_shepard_error(dist_fun, som, x, d=None):
     ----------
     dist_fun : function (k : int, l : int) => int
         distance function between units k and l on the map.
-    som : array, shape = [n_units, dim]
-        SOM code vectors.
     x : array, shape = [n_samples, dim]
         input samples.
+    som : array, shape = [n_units, dim]
+        (optional) SOM code vectors.
     d : array, shape = [n_samples, n_units]
         (optional) euclidean distances between input samples and code vectors.
 
@@ -125,7 +125,10 @@ def kruskal_shepard_error(dist_fun, som, x, d=None):
     """
     n = x.shape[0]
     if d is None:
-        d = euclidean_distances(x, som)
+        if som is None:
+            raise ValueError('If distance matrix d is not given, som cannot be None!')
+        else:
+            d = euclidean_distances(x, som)
     d_data = euclidean_distances(x)
     d_data /= d_data.max()
     bmus = np.argmin(d, axis=1)
