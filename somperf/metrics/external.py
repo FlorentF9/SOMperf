@@ -24,14 +24,14 @@ def class_scatter_index(dist_fun, y_true, y_pred):
     ----------
     dist_fun : function (k : int, l : int) => int
         distance function between units k and l on the map.
-    y_true: array, shape = [n]
+    y_true : array, shape = [n]
         true labels.
-    y_pred: array, shape = [n]
+    y_pred : array, shape = [n]
         predicted cluster ids.
 
     Returns
     -------
-        csi : float (lower is better)
+    csi : float (lower is better)
 
     References
     ----------
@@ -59,14 +59,14 @@ def clustering_accuracy(y_true, y_pred):
 
     Parameters
     ----------
-    y_true: array, shape = [n]
+    y_true : array, shape = [n]
         true labels.
-    y_pred: array, shape = [n]
+    y_pred : array, shape = [n]
         predicted cluster ids.
 
     Returns
     -------
-        accuracy : float in [0,1] (higher is better)
+    accuracy : float in [0,1] (higher is better)
     """
     y_true = y_true.astype(np.int64)
     y_pred = y_pred.astype(np.int64)
@@ -81,14 +81,14 @@ def entropy(y_true, y_pred):
 
     Parameters
     ----------
-    y_true: array, shape = [n]
+    y_true : array, shape = [n]
         true labels.
-    y_pred: array, shape = [n]
+    y_pred : array, shape = [n]
         predicted cluster ids.
 
     Returns
     -------
-        entropy : float (lower is better)
+    entropy : float (lower is better)
 
     References
     ----------
@@ -110,14 +110,14 @@ def normalized_minor_class_occurrence(y_true, y_pred):
 
     Parameters
     ----------
-    y_true: array, shape = [n]
+    y_true : array, shape = [n]
         true labels.
-    y_pred: array, shape = [n]
+    y_pred : array, shape = [n]
         predicted cluster ids.
 
     Returns
     -------
-        nmco : float in [0,1] (lower is better)
+    nmco : float in [0,1] (lower is better)
 
     References
     ----------
@@ -131,14 +131,14 @@ def purity(y_true, y_pred):
 
     Parameters
     ----------
-    y_true: array, shape = [n]
+    y_true : array, shape = [n]
         true labels.
-    y_pred: array, shape = [n]
+    y_pred : array, shape = [n]
         predicted cluster ids.
 
     Returns
     -------
-        purity : float in [0,1] (higher is better)
+    purity : float in [0,1] (higher is better)
     """
     y_true = y_true.astype(np.int64)
     y_pred = y_pred.astype(np.int64)
