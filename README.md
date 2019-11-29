@@ -87,10 +87,12 @@ Label-based metrics, also called external indices, rather take as inputs the clu
 * [x] Neighborhood preservation [10]
 * [x] Quantization error
 * [x] Topographic error
-* [x] Topographic product [1,2,12]
+* [x] Topographic product [1,2]
 * [x] Trustworthiness [10]
 * [x] Silhouette :arrow_right: `sklearn.metrics.silhouette_score`
 * [x] Davies-Bouldin :arrow_right: `sklearn.metrics.davies_bouldin_score`
+* [ ] Topographic function [12]
+* [ ] C Measure [13]
 
 ### External (label-based)
 
@@ -166,6 +168,8 @@ Here is a small selection of SOM algorithm implementations:
 > [11] Vesanto, J., Sulkava, M., & Hollmén, J. (2003). On the Decomposition of the Self-Organizing Map Distortion Measure. Proceedings of the Workshop on Self-Organizing Maps (WSOM’03), 11–16.
 
 > [12] Villmann, T., Der, R., Martinez, T. A new quantitative measure of topology preservation in Kohonen's feature maps, Proceedings of the IEEE International Conference on Neural Networks 94, Orlando, Florida, USA, 645-648, June 1994
+
+> [13] Goodhill, G. J., & Sejnowski, T. J. (1996). Quantifying neighbourhood preservation in topographic mappings. Proceedings of the 3rd Joint Symposium on Neural Computation, La Jolla, CA, 61–82.
 
 ## Future work
 
