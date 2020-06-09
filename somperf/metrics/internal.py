@@ -9,6 +9,47 @@ from scipy.sparse.csgraph import shortest_path
 import pandas as pd
 
 
+def c_measure(dist_fun, x, som=None, d=None):
+    """C measure.
+
+    Measures distance preservation between input space and output space. Euclidean distance is used in input space.
+    In output space, distance is usually Manhattan distance between the best matching units on the maps (this distance
+    is provided by the dist_fun argument).
+
+    Parameters
+    ----------
+    dist_fun : function (k : int, l : int) => int
+        distance function between units k and l on the map.
+    x : array, shape = [n_samples, dim]
+        input samples.
+    som : array, shape = [n_units, dim]
+        (optional) SOM code vectors.
+    d : array, shape = [n_samples, n_units]
+        (optional) euclidean distances between input samples and code vectors.
+
+    Returns
+    -------
+    c : float
+        C measure (higher is better)
+
+    References
+    ----------
+    Goodhill, G. J., & Sejnowski, T. J. (1996). Quantifying neighbourhood preservation in topographic mappings.
+    """
+    n = x.shape[0]
+    if d is None:
+        if som is None:
+            raise ValueError('If distance matrix d is not given, som cannot be None!')
+        else:
+            d = euclidean_distances(x, som)
+    d_data = euclidean_distances(x)
+    bmus = np.argmin(d, axis=1)
+    d_som = np.array([[dist_fun(k, l)
+                      for l in bmus]
+                      for k in bmus], dtype=np.float64)
+    return np.sum(d_data * d_som) / 2.0  # should be normalized by n(n-1) ?
+
+
 def combined_error(dist_fun, som, x=None, d=None):
     """Combined error.
 
@@ -283,6 +324,56 @@ def topographic_error(dist_fun, som=None, x=None, d=None):
     tbmus = np.argsort(d, axis=1)[:, :2]  # two best matching units
     tes = np.array([dist_fun(tbmu[0], tbmu[1]) > 1 for tbmu in tbmus])
     return np.mean(tes)
+
+
+def topographic_function(ks, dist_fun, max_dist, som=None, x=None, d=None, som_dim=2):
+    """Normalized topographic function.
+
+    Parameters
+    ----------
+    ks: array
+        topographic function parameters. Must be normalized distances, i.e. k=d/max_dist where d is a distance
+        on the map and max_dist is the maximum distance between two units on the map.
+    dist_fun : function (k : int, l : int) => int
+        distance function between units k and l on the map.
+    max_dist : int
+        maximum distance on the map.
+    som : array, shape = [n_units, dim]
+        (optional) SOM code vectors.
+    x : array, shape = [n_samples, dim]
+        (optional) input samples.
+    d : array, shape = [n_samples, n_units]
+        (optional) euclidean distances between input samples and code vectors.
+    som_dim : int (default=2)
+        number of dimensions of the SOM grid
+
+    Returns
+    -------
+    tf : array
+        topographic function taken at values ks
+
+    References
+    ----------
+    Villmann, T., Der, R., & Martinetz, T. (1994). A New Quantitative Measure of Topology Preservation in Kohonen’s Feature Maps.
+    """
+    if d is None:
+        if som is None or x is None:
+            raise ValueError('If distance matrix d is not given, som and x cannot be None!')
+        else:
+            d = euclidean_distances(x, som)
+    tbmus = np.argsort(d, axis=1)[:, :2]  # two best matching units
+    n_units = d.shape[1]
+    C = np.zeros((n_units, n_units), dtype='int')  # connectivity matrix
+    for tbmu in tbmus:
+        C[tbmu[0], tbmu[1]] = 1
+        C[tbmu[1], tbmu[0]] = 1
+    tf = np.zeros(len(ks))
+    for c in range(n_units):
+        for cc in range(n_units):
+            for i, k in enumerate(ks):
+                if dist_fun(c, cc)/max_dist > k and C[c, cc] == 1:
+                    tf[i] += 1
+    return tf / (n_units * (n_units - 3**som_dim))
 
 
 def topographic_product(dist_fun, som):
