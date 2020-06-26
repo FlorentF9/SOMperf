@@ -91,8 +91,8 @@ Label-based metrics, also called external indices, rather take as inputs the clu
 * [x] Trustworthiness [10]
 * [x] Silhouette :arrow_right: `sklearn.metrics.silhouette_score`
 * [x] Davies-Bouldin :arrow_right: `sklearn.metrics.davies_bouldin_score`
-* [ ] Topographic function [12]
-* [ ] C Measure [13]
+* [x] Topographic function [12]
+* [x] C Measure [13]
 
 ### External (label-based)
 
