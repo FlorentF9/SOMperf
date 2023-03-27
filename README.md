@@ -2,6 +2,10 @@
 
 **This package is in its early phase of development. SOM performance metrics have all been tested pretty well, but they may still contain bugs. Please report them in an issue if you find some.**
 
+If you found this library useful in your work, please cite following preprint:
+
+> Forest, Florent, Mustapha Lebbah, Hanane Azzag, and Jérôme Lacaille (2020). A Survey and Implementation of Performance Metrics for Self-Organized Maps. arXiv, November 11, 2020. https://doi.org/10.48550/arXiv.2011.05847.
+
 ## Installation
 
 This module was written for Python 3 and depends on following libraries:
@@ -14,7 +18,7 @@ This module was written for Python 3 and depends on following libraries:
 SOMperf can be installed easily using the setup script:
 
 ```shell
-$ python3 setup.py install
+python3 setup.py install
 ```
 
 It might be available in PyPI in the future.
