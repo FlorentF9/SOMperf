@@ -3,8 +3,8 @@ External indices
 """
 
 import numpy as np
-from sklearn.metrics.cluster.supervised import check_clusterings
-from sklearn.utils.linear_assignment_ import linear_assignment
+from sklearn.metrics.cluster._supervised import check_clusterings
+from scipy.optimize import linear_sum_assignment as linear_assignment
 from sklearn.metrics import accuracy_score
 from scipy.sparse import csr_matrix
 from scipy.sparse.csgraph import connected_components
