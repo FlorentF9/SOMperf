@@ -72,8 +72,8 @@ def clustering_accuracy(y_true, y_pred):
     y_pred = y_pred.astype(np.int64)
     check_clusterings(y_true, y_pred)
     w = _contingency_matrix(y_true, y_pred).T
-    ind = linear_assignment(w.max() - w)
-    return np.sum([w[i, j] for i, j in ind]) / y_true.size
+    row_ind, col_ind = linear_assignment(w.max() - w)
+    return np.sum([w[i, j] for i, j in zip(row_ind, col_ind)])  / y_true.size
 
 
 def entropy(y_true, y_pred):
