@@ -3,8 +3,8 @@ External indices
 """
 
 import numpy as np
-from sklearn.metrics.cluster.supervised import check_clusterings
-from sklearn.utils.linear_assignment_ import linear_assignment
+from sklearn.metrics.cluster._supervised import check_clusterings
+from scipy.optimize import linear_sum_assignment as linear_assignment
 from sklearn.metrics import accuracy_score
 from scipy.sparse import csr_matrix
 from scipy.sparse.csgraph import connected_components
@@ -72,8 +72,8 @@ def clustering_accuracy(y_true, y_pred):
     y_pred = y_pred.astype(np.int64)
     check_clusterings(y_true, y_pred)
     w = _contingency_matrix(y_true, y_pred).T
-    ind = linear_assignment(w.max() - w)
-    return np.sum([w[i, j] for i, j in ind]) / y_true.size
+    row_ind, col_ind = linear_assignment(w.max() - w)
+    return np.sum([w[i, j] for i, j in zip(row_ind, col_ind)])  / y_true.size
 
 
 def entropy(y_true, y_pred):
